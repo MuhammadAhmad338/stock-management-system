@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
 import { useContext } from 'react';
 import { Context } from '../Context/Context';
+import { MdDeleteOutline } from 'react-icons/md';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './Home.css';
 
 const Home = () => {
 
   const [productForm, setProductForm] = useState({});
+  const [query, setquery] = useState("");
   const [thumbnail, setThumbnail] = useState("");
   const [images, setImages] = useState([]);
-  const { products, addProduct } = useContext(Context);
+
+  const { products, addProduct, searchedItem, searchProduct, deleteProduct } = useContext(Context);
+
 
   const handleImageChange = (e) => {
     e.preventDefault();
@@ -21,7 +27,7 @@ const Home = () => {
     reader.readAsDataURL(file);
     reader.onloadend = () => {
       setThumbnail(reader.result);
-      setProductForm({...productForm, thumbnail: reader.result })
+      setProductForm({ ...productForm, thumbnail: reader.result })
     }
   }
 
@@ -41,7 +47,7 @@ const Home = () => {
 
         if (imageArray.length === files.length) {
           setImages([...imageArray]);
-          setProductForm({...productForm, images: [...imageArray] })
+          setProductForm({ ...productForm, images: [...imageArray] })
         }
       }
     }
@@ -49,45 +55,55 @@ const Home = () => {
 
   const handleChange = (e) => {
     e.preventDefault();
-    setProductForm({...productForm, [e.target.name]: e.target.value, thumbnail, images}) 
+    setProductForm({ ...productForm, [e.target.name]: e.target.value, thumbnail, images })
   }
 
-  const submitIT = () => {
+  const submitIT = async () => {
     addProduct(productForm);
+    toast("Product Added Successfully!");
+  }
+
+  const searchIt = (e) => {
+    e.preventDefault();
+    setquery(e.target.value);
+    searchProduct(query);
   }
 
   return (
     <>
       {/* The form div starts Here */}
-      <div className="container">
+      <div className='search'>
+        <input type="text" placeholder='Enter a shoes name' onChange={searchIt} />
+      </div>
+
+      {searchedItem.length && searchedItem.map((item) => (
+        <div className='searchItem'>
+          {item.title}
+        </div>
+      ))}
+
+      <div className='container'>
         <h2>Create a New POST</h2>
         <label for="title">Title:</label>
         <input onChange={handleChange} type="text" id="title" name="title" required />
-
         <label for="subtitle">Subtitle:</label>
         <input onChange={handleChange} type="text" id="subtitle" name="subtitle" />
-
         <label for="description">Description:</label>
         <textarea onChange={handleChange} id="description" name="description" rows="4" cols="50" required></textarea>
-
         <label for="price">Price:</label>
         <input onChange={handleChange} type="number" id="price" name="price" step="0.01" required />
-
         <label for="original_price">Original Price:</label>
         <input onChange={handleChange} type="number" id="original_price" name="original_price" step="0.01" />
-
         <label for="thumbnailImage">Thumbnail Image:</label>
         <input onChange={handleImageChange} type="file" id="thumbnailImage" name="thumbnailImage" accept="image/*" required />
-
         <label for="multipleImage">Multiple Images:</label>
         <input onChange={handleImagesChange} type="file" id="multipleImage" name="multipleImage" accept="image/*" multiple />
-
         <button onClick={submitIT}>Upload</button>
         {thumbnail && <img src={thumbnail} alt="" height={50} width={50} />}
         {images.length && images?.map((image) => (
           <img key={image} src={image} alt="" height={100} width={100} />
         ))}
-      </div>
+      </div >
       {/* The div ends here */}
       {/*  The table starts here */}
       <table>
@@ -100,11 +116,12 @@ const Home = () => {
             <th>Original Price</th>
             <th>Thumbnail Image</th>
             <th>Multiple Images</th>
+            <th>Delete</th>
           </tr>
         </thead>
         <tbody>
           {products?.map((product) => (
-            <tr>
+            <tr key={product._id}>
               <td>{product.title}</td>
               <td>{product.subtitle}</td>
               <td>{product.description}</td>
@@ -114,10 +131,16 @@ const Home = () => {
               <td>{product.images?.map((image) => (
                 <img src={image.secure_url} alt='' height={50} width={50} />
               ))}</td>
+              <td><div onClick={() => {
+                deleteProduct(product._id)
+                toast("Product Deleted Successfully!");
+              }} className='deleteicon'><MdDeleteOutline size={25} /></div></td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      <ToastContainer autoClose={3000} />
       {/* The table ends here*/}
     </>
   );
