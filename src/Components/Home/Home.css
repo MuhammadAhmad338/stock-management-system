@@ -81,6 +81,15 @@
   padding: 12px;
   background-color: papayawhip;
   color: black;
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.searchItem:hover {
+  background-color: #333;
+  color: #fff;
 }
 
 .deleteicon {

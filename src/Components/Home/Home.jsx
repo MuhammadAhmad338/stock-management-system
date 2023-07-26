@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { Context } from '../Context/Context';
 import { MdDeleteOutline } from 'react-icons/md';
 import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import './Home.css';
 
@@ -14,7 +15,7 @@ const Home = () => {
   const [images, setImages] = useState([]);
 
   const { products, addProduct, searchedItem, searchProduct, deleteProduct } = useContext(Context);
-
+  const navigate = useNavigate();
 
   const handleImageChange = (e) => {
     e.preventDefault();
@@ -77,8 +78,9 @@ const Home = () => {
       </div>
 
       {searchedItem.length && searchedItem.map((item) => (
-        <div className='searchItem'>
+        <div onClick={() => navigate(`/product/${item._id}`)} className='searchItem'>
           {item.title}
+          {item.subtitle}
         </div>
       ))}
 

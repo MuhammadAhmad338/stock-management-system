@@ -10,7 +10,7 @@ const MyContext = ({ children }) => {
 
     const addProduct = async (productData) => {
         try {
-            const response = await axios.post("http://localhost:3000/addProduct", productData);
+            const response = await axios.post("https://webapp001.onrender.com/addProduct", productData);
             console.log("Product Added", response);
         } catch (error) {
             console.log(error);
@@ -19,7 +19,7 @@ const MyContext = ({ children }) => {
 
     const fetchProducts = async () => {
         try {
-            const { data } = await axios.get("http://localhost:3000/getAllProducts");
+            const { data } = await axios.get("https://webapp001.onrender.com/getAllProducts");
             setProducts(data);
         } catch (error) {
             console.log(error);
@@ -28,7 +28,7 @@ const MyContext = ({ children }) => {
 
     const deleteProduct = async (id) => {
         try {
-            const data = await axios.delete(`http://localhost:3000/deleteProduct/${id}`);
+            const data = await axios.delete(`https://webapp001.onrender.com/deleteProduct/${id}`);
             console.log(data);
         } catch (error) {
             console.log(error);
@@ -37,7 +37,7 @@ const MyContext = ({ children }) => {
 
     const searchProduct = async (query) => {
         try {
-             const data = await axios.get(`http://localhost:3000/searchProduct?title=`+query);
+             const data = await axios.get(`https://webapp001.onrender.com/searchProduct?title=`+query);
              setsearchedItem(data.data);
         } catch(error) {
             console.log(error);
